@@ -1,67 +1,138 @@
 import java.text.NumberFormat;
 import java.util.Locale;
 import java.util.Scanner;
-public class MortgageCal{
+public class MortgageCal {
+
     public static void main(String[] args) {
-      Scanner sc = new Scanner(System.in);
-      System.out.print("Enter Your Salary:");
-      double salary = 0;
-      if(sc.hasNextDouble())
-      {
-        salary = sc.nextDouble();
-        System.out.print("Enter Your Credit Score(0-500): ");
-        int credit = sc.nextInt();
-        if(credit > 500){
-          System.out.println("Enter A Valid Credit Score(0-500)");
-        }else{
-          System.out.print("Do You Have Any Criminal Record(eg:true/false): ");
-          boolean record = false;
-          if(sc.hasNextBoolean()){
-            record = sc.nextBoolean();
- 
-            if (record == true) {
-              System.out.println("You are not eligible for loan.");
-            }else{
-              double loan = salary*2;
- 
-              System.out.println("=== Bangladesh Mortgage Calculator (Dollar) ===");
-              System.out.print("Enter loan amount (principal in BDT): ");
-              double principal = sc.nextDouble();
- 
-              if (( principal <= loan && credit >= 300) && record==false ){
-                System.out.print("Enter annual interest rate: ");
-                float interest = sc.nextFloat();
-                System.out.print("Enter loan period (in years): ");
-                int years = sc.nextInt();
-                float interestRate = (interest / 100 / 12);  
-                int totalMonth = years * 12;
- 
-                double mortgage = (double) principal * ( interestRate* Math.pow(1 + interestRate, totalMonth)) / (Math.pow(1 + interestRate, totalMonth) - 1);
-                double totalPayment = mortgage * totalMonth;
-                double totalInterest = totalPayment - principal;
- 
-                Locale bdlocale = Locale.of("en", "BD");
-                NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(bdlocale);
-                System.out.println("=== Mortgage Summary ===");
-                System.out.println("Loan Amount: "+currencyFormatter.format(principal));
-                String monthlyInterest = currencyFormatter.format(mortgage);
-                System.out.println("Monthly Payment: "+monthlyInterest);
-                String totalAmmount = currencyFormatter.format(totalPayment);
-                System.out.println("Total Payment: "+totalAmmount);
-                String interestAmmount = currencyFormatter.format(totalInterest);
-                System.out.println("Total Interest: "+interestAmmount);
-                sc.close();
-              }else{
-                System.out.println("You Are Not Eligeble For Loan.");
-              }
+        Scanner sc = new Scanner(System.in);
+        System.out.println("=== MORTGAGE CALCULATOR ==="); 
+        double salary = 0;
+        while (true) {
+            System.out.print("Enter your Salary: ");
+            if (sc.hasNextInt()) {
+                salary = sc.nextInt();
+
+                if (salary > 0) {
+                break;
+                }else{ System.out.println("Salary must be positive.");
+                }
+
+            } else {
+                System.out.println("Invalid Data");
+                sc.next();
             }
-          }else{
-            System.out.println("Enter A Valid Record(eg:true/false)");
-          }
         }
-      }else{
-        System.out.println("Invalid input.Please enter a number.");
-      }
-    }  
-}
+        double annualSalary = salary * 12;
+        boolean isCriminal = false;
+        while (true) {
+            System.out.print("Do You Have Any Criminal Record(eg:true/false): ");
+            if (sc.hasNextBoolean()) {
+                isCriminal = sc.nextBoolean();
+                break;
+            } else {
+                System.out.println("Invalid Data Type");
+                sc.next();
+            }
+        }
+
  
+        int creditScore = 0;
+        while (true) {
+            System.out.print("Enter Your Credit Score (0 - 500): ");
+            if (sc.hasNextInt()) {
+                creditScore = sc.nextInt();
+
+                if (creditScore >= 0 && creditScore <= 500) {  
+                   break;
+                }
+                else { System.out.println("Credit score must be between 0 and 500.");}
+            } else {
+                System.out.println("Invalid Data ");
+                sc.next();
+            }
+        }
+
+   
+        int T = 0;
+        while (true) {
+            System.out.print("Enter loan amount (principal in BDT): ");
+            if (sc.hasNextInt()) {
+                T = sc.nextInt();
+                if (T > 0) {
+                 break;
+                }
+                else {System.out.println("Loan amount must be positive.");}
+            } else {
+                System.out.println("Invalid Data Type");
+                sc.next();
+            }
+        }
+
+
+        
+        if (T < (annualSalary * 2) && !isCriminal && creditScore > 300) {
+
+            
+            float Z = 0;
+            while (true) {
+                System.out.print("Enter annual interest (in %): ");
+                if (sc.hasNextFloat()) {
+                    Z = sc.nextFloat();
+
+                    if (Z > 0){
+                     break;
+                    } 
+                    else {System.out.println("Interest rate must be positive.");}
+                } else {
+                    System.out.println("Invalid Data Type");
+                    sc.next();
+                }
+            }
+
+
+            
+            int N = 0;
+            while (true) {
+                System.out.print("Enter Loan Period in Years: ");
+                if (sc.hasNextInt()) {
+                    N = sc.nextInt();
+                    if (N > 0) {
+                      break;
+                    }
+                    else {System.out.println("Loan period must be positive.");}
+                } else {
+                    System.out.println("Invalid Data ");
+                    sc.next();
+                }
+            }
+
+
+            
+            double z = (Z / 100) / 12; 
+            int n = N * 12; 
+            double M = T * (z * Math.pow(1 + z, n)) / (Math.pow(1 + z, n) - 1); 
+            double totalPayment = M * n;
+            double totalInterest = totalPayment - T;
+
+
+            
+            System.out.println("=== Mortgage Summary ===");
+            Locale bdCurrency = Locale.of("en", "BD");
+            NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(bdCurrency);
+
+            System.out.println("Loan Amount    : " + currencyFormatter.format(T));
+            System.out.println("Monthly Payment: " + currencyFormatter.format(M));
+            System.out.println("Total Payment  : " + currencyFormatter.format(totalPayment));
+            System.out.println("Total Interest : " + currencyFormatter.format(totalInterest));
+
+        } else if (creditScore <= 300) {
+            System.out.println("Sorry! The minimum credit score for eligibility is 300.");
+        } else if (T > annualSalary * 2) {
+            System.out.println("Sorry! The maximum loan qualification is twice your gross annual salary.");
+        } else if (isCriminal) {
+            System.out.println("Sorry! You Are Not Eligeble For Loan.");
+        }
+
+        sc.close();
+    }
+}
